@@ -1,1 +1,72 @@
+clc;
+clear;
+close all;
 
+% Smart City IoT Traffic Simulation
+
+sensorCount = 50:50:500;     % Number of sensors
+
+delay = zeros(size(sensorCount));
+packetDelivery = zeros(size(sensorCount));
+bandwidth = zeros(size(sensorCount));
+throughput = zeros(size(sensorCount));
+
+for i = 1:length(sensorCount)
+
+    n = sensorCount(i);
+
+    % Delay increases with sensor count
+    delay(i) = 5 + 0.03*n + rand()*2;
+
+    % Packet Delivery Ratio (%)
+    packetDelivery(i) = 99 - 0.02*n + rand();
+
+    if packetDelivery(i) < 80
+        packetDelivery(i) = 80;
+    end
+
+    % Bandwidth Utilization (Mbps)
+    bandwidth(i) = 5 + 0.02*n + rand()*0.5;
+
+    % Throughput (Mbps)
+    throughput(i) = bandwidth(i) * packetDelivery(i) / 100;
+
+end
+
+% Display Results
+Result = table(sensorCount', delay', packetDelivery', bandwidth', throughput', ...
+    'VariableNames', {'Sensors','Delay_ms','PacketDelivery_Percent','Bandwidth_Mbps','Throughput_Mbps'});
+
+disp(Result);
+
+% Plot Graphs
+
+figure;
+
+subplot(2,2,1);
+plot(sensorCount, delay,'-o','LineWidth',2);
+grid on;
+xlabel('Sensor Count');
+ylabel('Delay (ms)');
+title('Sensor Count vs Delay');
+
+subplot(2,2,2);
+plot(sensorCount, packetDelivery,'-s','LineWidth',2);
+grid on;
+xlabel('Sensor Count');
+ylabel('Packet Delivery (%)');
+title('Sensor Count vs Packet Delivery');
+
+subplot(2,2,3);
+plot(sensorCount, bandwidth,'-*','LineWidth',2);
+grid on;
+xlabel('Sensor Count');
+ylabel('Bandwidth (Mbps)');
+title('Sensor Count vs Bandwidth');
+
+subplot(2,2,4);
+plot(sensorCount, throughput,'-d','LineWidth',2);
+grid on;
+xlabel('Sensor Count');
+ylabel('Throughput (Mbps)');
+title('Sensor Count vs Throughput');
