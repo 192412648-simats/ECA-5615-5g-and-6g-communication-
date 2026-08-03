@@ -1,1 +1,81 @@
+clc;
+clear;
+close all;
 
+% Simulation of AI-Based Wireless Optimization
+% Parameters
+users = 10:10:100;
+
+predictionAccuracy = zeros(size(users));
+throughput = zeros(size(users));
+delay = zeros(size(users));
+resourceAllocation = zeros(size(users));
+energyEfficiency = zeros(size(users));
+
+for i = 1:length(users)
+
+    u = users(i);
+
+    % AI Prediction Accuracy (%)
+    predictionAccuracy(i) = 80 + 18*(1-exp(-u/40));
+
+    % Throughput (Mbps)
+    throughput(i) = 50 + 0.8*u + rand()*3;
+
+    % Delay (ms)
+    delay(i) = 25 - 15*(1-exp(-u/50)) + rand();
+
+    % Resource Allocation Efficiency (%)
+    resourceAllocation(i) = 60 + 35*(1-exp(-u/35));
+
+    % Energy Efficiency (Mbps/W)
+    energyEfficiency(i) = 2 + 6*(1-exp(-u/45));
+
+end
+
+figure;
+
+subplot(3,2,1)
+plot(users,predictionAccuracy,'-ob','LineWidth',2);
+grid on;
+xlabel('Number of Users');
+ylabel('Accuracy (%)');
+title('Prediction Accuracy');
+
+subplot(3,2,2)
+plot(users,throughput,'-sr','LineWidth',2);
+grid on;
+xlabel('Number of Users');
+ylabel('Throughput (Mbps)');
+title('Network Throughput');
+
+subplot(3,2,3)
+plot(users,delay,'-dg','LineWidth',2);
+grid on;
+xlabel('Number of Users');
+ylabel('Delay (ms)');
+title('Transmission Delay');
+
+subplot(3,2,4)
+plot(users,resourceAllocation,'-^m','LineWidth',2);
+grid on;
+xlabel('Number of Users');
+ylabel('Allocation Efficiency (%)');
+title('Resource Allocation');
+
+subplot(3,2,5)
+plot(users,energyEfficiency,'-*k','LineWidth',2);
+grid on;
+xlabel('Number of Users');
+ylabel('Energy Efficiency (Mbps/W)');
+title('Energy Efficiency');
+
+sgtitle('AI-Based Wireless Network Optimization');
+
+% Display Results
+ResultTable = table(users',predictionAccuracy',throughput',delay', ...
+                    resourceAllocation',energyEfficiency', ...
+    'VariableNames',{'Users','PredictionAccuracy','Throughput_Mbps', ...
+    'Delay_ms','ResourceAllocation_Percent','EnergyEfficiency_MbpsPerW'});
+
+disp(ResultTable);
