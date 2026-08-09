@@ -1,0 +1,40 @@
+clc;
+clear;
+close all;
+
+% Number of traffic requests
+N = 100;
+
+% Random traffic request generation
+traffic = randi([10 100],1,N);
+
+% Cloud and MEC latency models
+cloud_latency = 70 + 0.30*traffic + randn(1,N)*3;
+mec_latency   = 10 + 0.08*traffic + randn(1,N)*1;
+
+% Ensure positive values
+cloud_latency = max(cloud_latency,1);
+mec_latency = max(mec_latency,1);
+
+% Average latency
+avg_cloud = mean(cloud_latency);
+avg_mec = mean(mec_latency);
+
+% Latency reduction
+reduction = ((avg_cloud-avg_mec)/avg_cloud)*100;
+
+fprintf('Average Cloud Latency = %.2f ms\n',avg_cloud);
+fprintf('Average MEC Latency   = %.2f ms\n',avg_mec);
+fprintf('Latency Reduction     = %.2f %%\n',reduction);
+
+% Plot
+figure;
+plot(traffic,cloud_latency,'LineWidth',1.5);
+hold on;
+plot(traffic,mec_latency,'LineWidth',1.5);
+grid on;
+
+xlabel('Traffic Load');
+ylabel('Latency (ms)');
+title('Cloud vs MEC Latency in Smart Traffic');
+legend('Cloud Computing','MEC');
