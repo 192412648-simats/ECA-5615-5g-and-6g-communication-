@@ -1,0 +1,58 @@
+clc;
+clear;
+close all;
+
+% Number of patient samples
+N = 100;
+
+% Generate patient heart-rate data
+heart_rate = 60 + 25*randn(1,N);
+
+% Keep heart rate within realistic limits
+heart_rate = max(40,min(140,heart_rate));
+
+% Cloud and Edge latency
+cloud_latency = 80 + 0.25*abs(heart_rate-80) + randn(1,N)*3;
+edge_latency  = 15 + 0.08*abs(heart_rate-80) + randn(1,N);
+
+% Ensure positive latency
+cloud_latency = max(cloud_latency,1);
+edge_latency = max(edge_latency,1);
+
+% Abnormal heart-rate detection
+abnormal = (heart_rate < 60) | (heart_rate > 100);
+
+% Average latency
+avg_cloud = mean(cloud_latency);
+avg_edge = mean(edge_latency);
+
+% Latency reduction
+reduction = ((avg_cloud-avg_edge)/avg_cloud)*100;
+
+fprintf('Average Cloud Latency = %.2f ms\n',avg_cloud);
+fprintf('Average Edge Latency  = %.2f ms\n',avg_edge);
+fprintf('Latency Reduction     = %.2f %%\n',reduction);
+
+fprintf('Number of Abnormal Samples = %d\n',sum(abnormal));
+
+% Heart rate plot
+figure;
+plot(1:N,heart_rate,'LineWidth',1.5);
+hold on;
+yline(100,'--');
+yline(60,'--');
+
+grid on;
+xlabel('Patient Sample');
+ylabel('Heart Rate (BPM)');
+title('Wireless Healthcare Heart Rate Monitoring');
+legend('Heart Rate','Upper Threshold','Lower Threshold');
+
+% Latency comparison
+figure;
+bar([avg_cloud avg_edge]);
+
+grid on;
+set(gca,'XTickLabel',{'Cloud','Edge'});
+ylabel('Average Latency (ms)');
+title('Cloud vs Edge Communication Latency');
